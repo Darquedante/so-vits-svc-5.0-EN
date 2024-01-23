@@ -18,11 +18,12 @@ class WebUI:
         self.names2 = []
         self.voice_names = []
         self.base_config_path = 'configs/base.yaml'
+        
         if not os.path.exists(self.train_config_path):
             shutil.copyfile(self.base_config_path, self.train_config_path)
-            print(i18n("初始化成功"))
+            print(i18n("Initialization successful"))
         else:
-            print(i18n("就绪"))
+            print(i18n("Ready"))
         self.main_ui()
 
     def main_ui(self):
@@ -30,109 +31,110 @@ class WebUI:
 
             gr.Markdown('# so-vits-svc5.0 WebUI')
 
-            with gr.Tab(i18n("预处理-训练")):
+            with gr.Tab(i18n("Preprocessing-Training")):
 
-                with gr.Accordion(i18n('训练说明'), open=False):
+                with gr.Accordion(i18n('Training Instructions'), open=False):
 
                     gr.Markdown(self.info.train)
 
-                gr.Markdown(i18n('### 预处理参数设置'))
+                gr.Markdown(i18n('### Preprocessing Parameter Settings'))
 
                 with gr.Row():
 
-                    self.model_name = gr.Textbox(value='sovits5.0', label='model', info=i18n('模型名称'), interactive=True) #建议设置为不可修改
+                    self.model_name = gr.Textbox(value='sovits5.0', label='model', info=i18n('Model Name'), interactive=True) # Suggest setting as non-modifiable
 
-                    self.f0_extractor = gr.Textbox(value='crepe', label='f0_extractor', info=i18n('f0提取器'), interactive=False)
+                    self.f0_extractor = gr.Textbox(value='crepe', label='f0_extractor', info=i18n('f0 Extractor'), interactive=False)
 
-                    self.thread_count = gr.Slider(minimum=1, maximum=os.cpu_count(), step=1, value=2, label='thread_count', info=i18n('预处理线程数'), interactive=True)
+                    self.thread_count = gr.Slider(minimum=1, maximum=os.cpu_count(), step=1, value=2, label='thread_count', info=i18n('Number of preprocessing threads'), interactive=True)
 
-                gr.Markdown(i18n('### 训练参数设置'))
-
-                with gr.Row():
-
-                    self.learning_rate = gr.Number(value=5e-5, label='learning_rate', info=i18n('学习率'), interactive=True)
-
-                    self.batch_size = gr.Slider(minimum=1, maximum=50, step=1, value=6, label='batch_size', info=i18n('批大小'), interactive=True)
+                gr.Markdown(i18n('### Training Parameter Settings'))
 
                 with gr.Row():
 
-                    self.info_interval = gr.Number(value=50, label='info_interval', info=i18n('训练日志记录间隔（step）'), interactive=True)
+                    self.learning_rate = gr.Number(value=5e-5, label='learning_rate', info=i18n('Learning Rate'), interactive=True)
 
-                    self.eval_interval = gr.Number(value=1, label='eval_interval', info=i18n('验证集验证间隔（epoch）'), interactive=True)
-
-                    self.save_interval = gr.Number(value=5, label='save_interval', info=i18n('检查点保存间隔（epoch）'), interactive=True)
-
-                    self.keep_ckpts = gr.Number(value=0, label='keep_ckpts', info=i18n('保留最新的检查点文件(0保存全部)'),interactive=True)
+                    self.batch_size = gr.Slider(minimum=1, maximum=50, step=1, value=6, label='batch_size', info=i18n('Batch Size'), interactive=True)
 
                 with gr.Row():
 
-                    self.slow_model = gr.Checkbox(label=i18n("是否添加底模"), value=True, interactive=True)
+                    self.info_interval = gr.Number(value=50, label='info_interval', info=i18n('Training log record interval (step)'), interactive=True)
 
-                gr.Markdown(i18n('### 开始训练'))
+                    self.eval_interval = gr.Number(value=1, label='eval_interval', info=i18n('Validation set evaluation interval (epoch)'), interactive=True)
 
-                with gr.Row():
+                    self.save_interval = gr.Number(value=5, label='save_interval', info=i18n('Checkpoint save interval (epoch)'), interactive=True)
 
-                    self.bt_open_dataset_folder = gr.Button(value=i18n('打开数据集文件夹'))
-
-                    self.bt_onekey_train = gr.Button(i18n('一键训练'), variant="primary")
-
-                    self.bt_tb = gr.Button(i18n('启动Tensorboard'), variant="primary")
-
-                gr.Markdown(i18n('### 恢复训练'))
+                    self.keep_ckpts = gr.Number(value=0, label='keep_ckpts', info=i18n('Keep the latest checkpoint files (0 to save all)'),interactive=True)
 
                 with gr.Row():
 
-                    self.resume_model = gr.Dropdown(choices=sorted(self.names), label='Resume training progress from checkpoints', info=i18n('从检查点恢复训练进度'), interactive=True)
+                    self.slow_model = gr.Checkbox(label=i18n("Add base model"), value=True, interactive=True)
+
+                gr.Markdown(i18n('### Start Training'))
+
+                with gr.Row():
+
+                    self.bt_open_dataset_folder = gr.Button(value=i18n('Open Dataset Folder'))
+
+                    self.bt_onekey_train = gr.Button(i18n('One-click Training'), variant="primary")
+
+                    self.bt_tb = gr.Button(i18n('Launch Tensorboard'), variant="primary")
+
+                gr.Markdown(i18n('### Resume Training'))
+
+                with gr.Row():
+
+                    self.resume_model = gr.Dropdown(choices=sorted(self.names), label='Resume training progress from checkpoints', info=i18n('Resume training progress from checkpoints'), interactive=True)
 
                     with gr.Column():
 
-                        self.bt_refersh = gr.Button(i18n('刷新'))
+                        self.bt_refersh = gr.Button(i18n('Refresh'))
 
-                        self.bt_resume_train = gr.Button(i18n('恢复训练'), variant="primary")
+                        self.bt_resume_train = gr.Button(i18n('Resume Training'), variant="primary")
 
-            with gr.Tab(i18n("推理")):
+            with gr.Tab(i18n("Inference")):
 
-                with gr.Accordion(i18n('推理说明'), open=False):
+                with gr.Accordion(i18n('Inference Instructions'), open=False):
 
                     gr.Markdown(self.info.inference)
 
-                gr.Markdown(i18n('### 推理参数设置'))
+                gr.Markdown(i18n('### Inference Parameter Settings'))
 
                 with gr.Row():
 
                     with gr.Column():
 
-                        self.keychange = gr.Slider(-24, 24, value=0, step=1, label=i18n('变调'))
+                        self.keychange = gr.Slider(-24, 24, value=0, step=1, label=i18n('Key Change'))
 
-                        self.file_list = gr.Markdown(value="", label=i18n("文件列表"))
+                        self.file_list = gr.Markdown(value="", label=i18n("File List"))
 
                         with gr.Row():
 
                             self.resume_model2 = gr.Dropdown(choices=sorted(self.names2), label='Select the model you want to export',
-                                                             info=i18n('选择要导出的模型'), interactive=True)
+                                                             info=i18n('Select the model to export'), interactive=True)
                             with gr.Column():
 
-                                self.bt_refersh2 = gr.Button(value=i18n('刷新模型和音色'))
+                                self.bt_refersh2 = gr.Button(value=i18n('Refresh Models and Timbres'))
 
 
-                                self.bt_out_model = gr.Button(value=i18n('导出模型'), variant="primary")
+                                self.bt_out_model = gr.Button(value=i18n('Export Model'), variant="primary")
 
                         with gr.Row():
 
                             self.resume_voice = gr.Dropdown(choices=sorted(self.voice_names), label='Select the sound file',
-                                                            info=i18n('选择音色文件'), interactive=True)
+                                                            info=i18n('Select the timbre file'), interactive=True)
 
                         with gr.Row():
 
-                            self.input_wav = gr.Audio(type='filepath', label=i18n('选择待转换音频'), source='upload')
+                            self.input_wav = gr.Audio(type='filepath', label=i18n('Select audio file to convert'), source='upload')
 
                         with gr.Row():
 
-                            self.bt_infer = gr.Button(value=i18n('开始转换'), variant="primary")
+                            self.bt_infer = gr.Button(value=i18n('Start Conversion'), variant="primary")
 
                         with gr.Row():
 
-                            self.output_wav = gr.Audio(label=i18n('输出音频'), interactive=False)
+                            self.output_wav = gr.Audio(label=i18n('Output Audio'), interactive=False)
+
 
             self.bt_open_dataset_folder.click(fn=self.openfolder)
             self.bt_onekey_train.click(fn=self.onekey_training,inputs=[self.model_name, self.thread_count,self.learning_rate,self.batch_size, self.info_interval, self.eval_interval,self.save_interval, self.keep_ckpts, self.slow_model])
@@ -144,6 +146,7 @@ class WebUI:
             self.bt_refersh2.click(fn=self.refresh_model_and_voice, inputs=[self.model_name],outputs=[self.resume_model2, self.resume_voice])
 
         ui.launch(inbrowser=True, server_port=2333, share=True)
+---
 
     def openfolder(self):
 
@@ -155,12 +158,12 @@ class WebUI:
             elif sys.platform.startswith('darwin'):
                 subprocess.call(['open', 'dataset_raw'])
             else:
-                print(i18n('打开文件夹失败！'))
+                print(i18n('Failed to open folder!'))
         except BaseException:
-            print(i18n('打开文件夹失败！'))
+            print(i18n('Failed to open folder!'))
 
     def preprocessing(self, thread_count):
-        print(i18n('开始预处理'))
+        print(i18n('Starting preprocessing'))
         train_process = subprocess.Popen('python -u svc_preprocessing.py -t ' + str(thread_count), stdout=subprocess.PIPE)
         while train_process.poll() is None:
             output = train_process.stdout.readline().decode('utf-8')
@@ -189,7 +192,7 @@ class WebUI:
         return f"{config['log']}"
 
     def training(self, model_name):
-        print(i18n('开始训练'))
+        print(i18n('Starting training'))
         train_process = subprocess.Popen('python -u svc_trainer.py -c ' + self.train_config_path + ' -n ' + str(model_name), stdout=subprocess.PIPE, creationflags=subprocess.CREATE_NEW_CONSOLE)
         while train_process.poll() is None:
             output = train_process.stdout.readline().decode('utf-8')
@@ -203,12 +206,12 @@ class WebUI:
         self.training(model_name)
 
     def out_model(self, model_name, resume_model2):
-        print(i18n('开始导出模型'))
+        print(i18n('Starting model export'))
         try:
             subprocess.Popen('python -u svc_export.py -c {} -p "chkpt/{}/{}"'.format(self.train_config_path, model_name, resume_model2),stdout=subprocess.PIPE)
-            print(i18n('导出模型成功'))
+            print(i18n('Model export successful'))
         except Exception as e:
-            print(i18n("出现错误："), e)
+            print(i18n("Error occurred:"), e)
 
 
     def tensorboard(self):
@@ -224,7 +227,7 @@ class WebUI:
             p2.stdout.close()
             p3.stdout.close()
             p4.communicate()
-            tb_process = subprocess.Popen('tensorboard --logdir=logs --port=6007', stdout=subprocess.PIPE)  # AutoDL端口设置为6007
+            tb_process = subprocess.Popen('tensorboard --logdir=logs --port=6007', stdout=subprocess.PIPE)  # AutoDL port set to 6007
         while tb_process.poll() is None:
             output = tb_process.stdout.readline().decode('utf-8')
             print(output)
@@ -239,7 +242,7 @@ class WebUI:
                     self.names.append(self.name)
             return {"choices": sorted(self.names), "__type__": "update"}
         except FileNotFoundError:
-            return {"label": i18n("缺少模型文件"), "__type__": "update"}
+            return {"label": i18n("Missing model file"), "__type__": "update"}
 
     def refresh_model2(self, model_name):
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -427,8 +430,8 @@ class I18nAuto:
         self.language_map = {}
         self.language = language or locale.getdefaultlocale()[0]
         if self.language not in self.language_list:
-            self.language = 'zh_CN'
-        self.read_language(self.language_all['zh_CN'])
+            self.language = 'en_US'
+        self.read_language(self.language_all['en_US'])
         while self.language_all[self.language]['SUPER'] != 'END':
             self.read_language(self.language_all[self.language])
             self.language = self.language_all[self.language]['SUPER']
