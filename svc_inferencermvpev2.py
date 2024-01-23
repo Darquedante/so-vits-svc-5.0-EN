@@ -148,17 +148,18 @@ def main(args):
     shift_str = str(args.shift)
     name_str = str(args.wave)[:-4]
     
-    print(model_str,spk_str,shift_str)
-
-    # 从最后开始查找斜杠的索引
+    print(model_str, spk_str, shift_str)
+    
+    # Find the index of the last slash from the end
     last_slash_index = spk_str.rfind('/')
     if last_slash_index != -1:
-        # 进行切片操作，获取所需部分
+        # Perform a slicing operation to get the desired part
         sliced_part = spk_str[last_slash_index + 1:]
     else:
-        # 如果没有找到斜杠，使用整个字符串
+        # If no slash is found, use the entire string
         sliced_part = spk_str
-    print(model_str,spk_str,shift_str,sliced_part)
+    print(model_str, spk_str, shift_str, sliced_part)
+
     
 
     output_filename = name_str + "_" + "rmvpepit_" +"large-v2ppg_" + model_str + "_" + sliced_part + "_"+ shift_str
