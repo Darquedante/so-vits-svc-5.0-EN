@@ -146,7 +146,6 @@ class WebUI:
             self.bt_refersh2.click(fn=self.refresh_model_and_voice, inputs=[self.model_name],outputs=[self.resume_model2, self.resume_voice])
 
         ui.launch(inbrowser=True, server_port=2333, share=True)
----
 
     def openfolder(self):
 
